@@ -1,19 +1,26 @@
 import tensorflow as tf
 import tensorflow_hub as hub
 import tensorflow_text as text # necessary for the BERT layers
+import ssl
+import certifi
+
+ssl_context = ssl.create_default_context()
+ssl_context.load_verify_locations(certifi.where())
 
 class BERTEmbedding(tf.keras.layers.Layer):
     def __init__(self, **kwargs) -> None:
-        preprocess_url = "https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3"
-        bert_url = "https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/4"
+        # https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3
+        preprocess_path = "/Users/basvanroozendaal/Downloads/DATA THESIS/Embeddings/bert_en_uncased_preprocess_3"
+        # https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/4
+        bert_path = "/Users/basvanroozendaal/Downloads/DATA THESIS/Embeddings/bert_en_uncased_L-12_H-768_A-12_4"
         self.embedding_dim = 768
 
         print("Loading BERT preprocessing layer", end='\r')
-        self.preprocessor = hub.KerasLayer(preprocess_url)
+        self.preprocessor = hub.KerasLayer(hub.load(preprocess_path))
         print("BERT preprocessing layer loaded", end='\r')
 
         print("Loading BERT layer", end='\r')
-        self.bert = hub.KerasLayer(bert_url)
+        self.bert = hub.KerasLayer(hub.load(bert_path))
         print("BERT layer loaded", end='\r')
         super().__init__(**kwargs)
     

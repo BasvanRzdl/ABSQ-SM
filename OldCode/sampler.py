@@ -2,6 +2,11 @@ from numbers import Number
 from typing import Sequence
 import dask.dataframe as dd
 
+### This file is used for sampling the (yelp) data be it balanced or not balanced
+
+# This part of the code was only used once as a script. 
+# Therefore, it may give unexpected errors for other configurations.
+
 def check_size_factor(size: int=None, factor=None):
     if size is None != factor is None:
         raise ValueError("Either enter the size or the factor")
@@ -63,43 +68,3 @@ def split_csv(inpath: str, outpaths: Sequence[str], frac: Sequence[Number], rand
 
     for outpath, population in zip(outpaths, populations):
         population.to_csv(outpath)
-
-if __name__ == "__main__":
-    yelp_pop_train_path = 'ExternalData/yelp/population/train-*.csv'
-    yelp_pop_test_path = 'ExternalData/yelp/population/test-*.csv'
-
-    yelp_pret_train_path = 'ExternalData/yelp/pret/train-*.csv'
-    yelp_pret_test_path = 'ExternalData/yelp/pret/test-*.csv'
-
-    yelp_mult_train_path = 'ExternalData/yelp/2015/mult/train-*.csv'
-    yelp_mult_test_path = 'ExternalData/yelp/2015/mult/test-*.csv'
-
-    sem_rest_mult_train_path = 'ExternalData/semeval_2015/restaurant/mult/train-*.csv'
-    sem_rest_mult_test_path = 'ExternalData/semeval_2015/restaurant/mult/test-*.csv'
-
-    sem_rest_ft_train_path = 'ExternalData/semeval_2015/restaurant/ft/train.csv'
-    sem_rest_ft_test_path = 'ExternalData/semeval_2015/restaurant/ft/test.csv'
-
-    # split large file into training set and test set
-    # print('splitting large file')
-    # split_csv('ExternalData/yelp.csv', [yelp_pop_train_path, yelp_pop_test_path],
-    # [0.8, 0.2])
-
-    # Sample for pretraining
-    # print('sampling pret documents')
-    # sample(yelp_pop_train_path, yelp_pret_train_path, size=10_000, balance=True)
-    # sample(yelp_pop_test_path, yelp_pret_test_path, size=1_000)
-
-    # Sample aspect for mult
-    print('sampling mult aspects')
-    sample(sem_rest_ft_train_path, sem_rest_mult_train_path, factor=3)
-    sample(sem_rest_ft_test_path, sem_rest_mult_test_path, factor=1)
-
-    # Sample documents for mult
-    # unbalanced? or should we balance?
-    print('sampling mult documents')
-    size_asp_train = len(dd.read_csv(sem_rest_mult_train_path))
-    size_asp_test = len(dd.read_csv(sem_rest_mult_test_path))
-
-    sample(yelp_pop_train_path, yelp_mult_train_path, size=size_asp_train)
-    sample(yelp_pop_test_path, yelp_mult_test_path, size=size_asp_test)
